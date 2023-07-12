@@ -2,6 +2,9 @@ package app
 
 import (
 	"FadyGamilM/banking/app/handlers"
+	repository_adapters "FadyGamilM/banking/domain/adapters"
+	service_adapters "FadyGamilM/banking/service/adapters"
+
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -12,7 +15,12 @@ func Start_Server() {
 	// ! => refacotr to goriall mux
 	router := mux.NewRouter()
 	router.HandleFunc("/api", readinessHandler)
-	router.HandleFunc("/customers", handlers.GetAllCustomers)
+
+	// connecting the ports and adapters together
+	customer_handler := handlers.CustomerHandler{
+		Customer_service: service_adapters.NewCustomerServiceBusinessLogic(repository_adapters.NewCustomerRepoStub()),
+	}
+	router.HandleFunc("/customers", customer_handler.GetAllCustomers)
 	http.ListenAndServe(":5050", router)
 }
 

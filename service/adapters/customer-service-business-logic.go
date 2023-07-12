@@ -11,14 +11,14 @@ type CustomerServiceBusinessLogic struct {
 }
 
 // implement the primary port
-func (c CustomerServiceBusinessLogic) GetAllCustomers() ([]core.Customer, error) {
+func (cs CustomerServiceBusinessLogic) GetAllCustomers() ([]core.Customer, error) {
 	// the repo method returns the list of customers and error
-	return c.Customer_repo.GetAll()
+	return cs.Customer_repo.GetAll()
 }
 
 // Factory Method Pattern
-func NewCustomerServiceBusinessLogic(repo ports.CustomerRepository) CustomerServiceBusinessLogic {
+func NewCustomerServiceBusinessLogic(Repo ports.CustomerRepository) CustomerServiceBusinessLogic {
 	return CustomerServiceBusinessLogic{
-		Customer_repo: repo,
+		Customer_repo: Repo,
 	}
 }

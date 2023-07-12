@@ -7,17 +7,17 @@ import (
 
 // stub adapter type
 type CustomerRepoStub struct {
-	customers []core.Customer
+	Customers []core.Customer
 }
 
 // Implement the secondery port
-func (c CustomerRepoStub) GetAll() ([]core.Customer, error) {
-	return c.customers, nil
+func (cr CustomerRepoStub) GetAll() ([]core.Customer, error) {
+	return cr.Customers, nil
 }
 
 // Factory Method pattern
 func NewCustomerRepoStub() CustomerRepoStub {
-	return CustomerRepoStub{customers: []core.Customer{
+	return CustomerRepoStub{Customers: []core.Customer{
 		{
 			ID:        1,
 			Name:      "Fady Gamil",
