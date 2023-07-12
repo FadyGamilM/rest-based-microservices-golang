@@ -4,6 +4,7 @@ import (
 	"FadyGamilM/banking/app/handlers"
 	repository_adapters "FadyGamilM/banking/domain/adapters"
 	service_adapters "FadyGamilM/banking/service/adapters"
+	"fmt"
 
 	"net/http"
 
@@ -21,6 +22,7 @@ func Start_Server() {
 		Customer_service: service_adapters.NewCustomerServiceBusinessLogic(repository_adapters.NewCustomerRepoStub()),
 	}
 	router.HandleFunc("/customers", customer_handler.GetAllCustomers)
+	fmt.Println("Server is up and running on port 5050")
 	http.ListenAndServe(":5050", router)
 }
 
