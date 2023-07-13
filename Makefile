@@ -10,22 +10,22 @@ BINARY_NAME=bankingapi
 
 # to create a running container instance for postgres using the name of the container we specified above
 postgres:
-	docker run -d --name ${DB_DOCKER_CONTAINER} -p 5432:1122 -e POSTGRES_USER=fady -e POSTGRES_PASSWORD=fady postgres:14
+	docker run -d --name ${DB_DOCKER_CONTAINER} -p 1122:5432 -e POSTGRES_USER=fady -e POSTGRES_PASSWORD=fady postgres:14
 
 # now lets create an actual datbase inside this container 
 createdb:
 	docker exec -it ${DB_DOCKER_CONTAINER} createdb --username=fady --owner=fady bankingdb
 
 migrate_up:
-	docker run -i -v "H:\1- freelancing path\Courses\golang stack\projects\cfe_api\migrations:/migrations" --network host migrate/migrate -path=/migrations/ -database "postgresql://fady:fady@127.0.0.1/cfedb?sslmode=disable" up
+	docker run -i -v "H:\1- freelancing path\Courses\golang stack\projects\rest-based-microservices-golang\migrations:/migrations" --network host migrate/migrate -path=/migrations/ -database "postgresql://fady:fady@127.0.0.1:1122/bankingdb?sslmode=disable" up 1
 
 migrate_down:
-	docker run -i -v "H:\1- freelancing path\Courses\golang stack\projects\cfe_api\migrations:/migrations" --network host migrate/migrate -path=/migrations/ -database "postgresql://fady:fady@127.0.0.1/cfedb?sslmode=disable" down
+	docker run -i -v "H:\1- freelancing path\Courses\golang stack\projects\rest-based-microservices-golang\migrations:/migrations" --network host migrate/migrate -path=/migrations/ -database "postgresql://fady:fady@127.0.0.1:1122/bankingdb?sslmode=disable" down 1
 
 
 build:
 	@echo " + Building the binary of the backend ... "
-	go build -o ${BINARY_NAME} cmd/server/main.go
+	go build -o ${BINARY_NAME} .
 	@echo " + The binary are ready !"
 
 start_docker:
@@ -34,7 +34,7 @@ start_docker:
 
 run: build start_docker
 	@echo " + starting the api"
-	@env PORT=${PORT} DSN=${DSN} ./${BINARY_NAME} &
+	@env DSN=${DSN} ./${BINARY_NAME} &
 	@echo " + api started"
 	
 
@@ -49,3 +49,6 @@ restart: stop run
 
 
 # this is how to handle the dirty schema_migrations table >    UPDATE schema_migrations SET dirty = false WHERE version = 1;
+
+
+
