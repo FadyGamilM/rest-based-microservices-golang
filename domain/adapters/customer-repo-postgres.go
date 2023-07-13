@@ -5,6 +5,7 @@ import (
 	"FadyGamilM/banking/infra/db"
 	"context"
 	"database/sql"
+	"log"
 )
 
 // the repository implementation using postgresql
@@ -13,7 +14,7 @@ type CustomerRepoPostgres struct {
 }
 
 // implement the secondry port
-func (crp CustomerRepoPostgres) GetAll() ([]core.Customer, error) {
+func (crp *CustomerRepoPostgres) GetAll() ([]core.Customer, error) {
 	/*
 		1. define a context with time out = 3 seconds to limit my database operations
 		2. call cancel on this context to release all used resources for this context
@@ -55,7 +56,32 @@ func (crp CustomerRepoPostgres) GetAll() ([]core.Customer, error) {
 	return all_customers, nil
 }
 
+func (crp *CustomerRepoPostgres) GetById(customerID int) (*core.Customer, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), db.DbTimeOut)
+	defer cancel()
+
+	select_by_id_query := `
+        SELECT * FROM customers WHERE id = $1
+    `
+
+	row := crp.db_conn_pool.QueryRowContext(ctx, select_by_id_query, customerID)
+
+	var customer core.Customer
+	err := row.Scan(
+		&customer.ID,
+		&customer.Name,
+		&customer.City,
+		&customer.ZipCode,
+		&customer.BirthDate,
+	)
+	if err != nil {
+		log.Printf("Error while fetching customer by id from postgres repo => %v", err)
+		return nil, err
+	}
+	return &customer, nil
+}
+
 // Factory method pattern
-func NewCustomerRepoPostgres(conn_pool *sql.DB) CustomerRepoPostgres {
-	return CustomerRepoPostgres{db_conn_pool: conn_pool}
+func NewCustomerRepoPostgres(conn_pool *sql.DB) *CustomerRepoPostgres {
+	return &CustomerRepoPostgres{db_conn_pool: conn_pool}
 }

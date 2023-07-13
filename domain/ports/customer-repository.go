@@ -7,4 +7,5 @@ import (
 // secondery port
 type CustomerRepository interface {
 	GetAll() ([]core.Customer, error)
+	GetById(int) (*core.Customer, error)
 }

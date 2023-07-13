@@ -11,8 +11,12 @@ type CustomerRepoStub struct {
 }
 
 // Implement the secondery port
-func (cr CustomerRepoStub) GetAll() ([]core.Customer, error) {
-	return cr.Customers, nil
+func (crs CustomerRepoStub) GetAll() ([]core.Customer, error) {
+	return crs.Customers, nil
+}
+
+func (crs CustomerRepoStub) GetById(customerID int) (*core.Customer, error) {
+	return nil, nil
 }
 
 // Factory Method pattern

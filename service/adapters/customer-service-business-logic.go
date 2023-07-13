@@ -16,6 +16,10 @@ func (cs CustomerServiceBusinessLogic) GetAllCustomers() ([]core.Customer, error
 	return cs.Customer_repo.GetAll()
 }
 
+func (cs CustomerServiceBusinessLogic) GetCustomerById(id int) (*core.Customer, error) {
+	return cs.Customer_repo.GetById(id)
+}
+
 // Factory Method Pattern
 func NewCustomerServiceBusinessLogic(Repo ports.CustomerRepository) CustomerServiceBusinessLogic {
 	return CustomerServiceBusinessLogic{
